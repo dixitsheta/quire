@@ -15,6 +15,9 @@ export default defineConfig({
         '@': resolve('src/renderer/src')
       }
     },
-    plugins: [react()]
+    plugins: [react()],
+    server: {
+      port: parseInt(process.env.VITE_DEV_SERVER_PORT || '5173', 10)
+    }
   }
 })

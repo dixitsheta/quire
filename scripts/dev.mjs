@@ -1,5 +1,10 @@
 import { createServer } from 'net'
 import { spawn, execSync } from 'child_process'
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const electronViteBin = resolve(__dirname, '..', 'node_modules', '.bin', 'electron-vite')
 
 function getRandomPort() {
   return new Promise((resolve, reject) => {
@@ -25,11 +30,11 @@ async function main() {
   const port = await getRandomPort()
   console.log(`\n  Starting dev server on random port: ${port}\n`)
 
-  const proc = spawn('npx', ['electron-vite', 'dev', '--port', String(port)], {
+  const proc = spawn(electronViteBin, ['dev'], {
     stdio: 'inherit',
-    shell: true,
     env: {
-      ...process.env
+      ...process.env,
+      VITE_DEV_SERVER_PORT: String(port)
     }
   })
 
