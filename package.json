@@ -1,8 +1,8 @@
 {
-  "name": "md-file-viewer-editor",
+  "name": "quire",
   "type": "module",
   "version": "1.0.0",
-  "description": "Modern cross-platform Markdown viewer/editor",
+  "description": "A modern cross-platform Markdown viewer/editor",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "node scripts/dev.mjs",
@@ -14,8 +14,8 @@
     "package:linux": "electron-vite build && electron-builder --linux"
   },
   "build": {
-    "appId": "com.mdeditor.app",
-    "productName": "MD Editor",
+    "appId": "com.quire.app",
+    "productName": "Quire",
     "directories": {
       "output": "release"
     },
@@ -27,7 +27,7 @@
     "publish": {
       "provider": "github",
       "owner": "dixitsheta",
-      "repo": "MDFileViewerEditor",
+      "repo": "quire",
       "releaseType": "release"
     },
     "mac": {

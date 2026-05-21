@@ -1,4 +1,4 @@
-# MD Editor
+# Quire
 
 A modern, cross-platform Markdown viewer/editor with a native app feel. Built on Electron + React + TypeScript.
 
@@ -26,7 +26,7 @@ A modern, cross-platform Markdown viewer/editor with a native app feel. Built on
 
 ## Download
 
-Pre-built binaries are available from [GitHub Releases](https://github.com/dixitsheta/MDFileViewerEditor/releases).
+Pre-built binaries are available from [GitHub Releases](https://github.com/dixitsheta/quire/releases).
 
 | Platform | Format |
 |----------|--------|
