@@ -17,9 +17,15 @@ export default function App() {
   useKeyboardShortcuts()
   useAutoSave()
 
+  const focusMode = useUiStore((s) => s.focusMode)
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-focus-mode', String(focusMode))
+  }, [focusMode])
 
   useEffect(() => {
     const editorStore = useEditorStore.getState()

@@ -44,3 +44,19 @@ body {
   background: var(--accent);
   color: #fff;
 }
+
+[data-focus-mode="true"] .app-shell > *:not(.editor-area) {
+  opacity: 0.15;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+[data-focus-mode="true"] .app-shell > .editor-area {
+  opacity: 1;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5);
+}
+
+[data-focus-mode="true"] .app-shell > *:not(.editor-area):hover {
+  opacity: 1;
+  pointer-events: auto;
+}

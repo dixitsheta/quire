@@ -39,6 +39,8 @@ export function AppShell() {
             break
         }
       }
+
+
     }
 
     window.addEventListener('keydown', handler)
@@ -50,6 +52,7 @@ export function AppShell() {
 
   return (
     <div
+      className="app-shell"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -108,6 +111,7 @@ export function AppShell() {
         )}
 
         <div
+          className="editor-area"
           style={{
             flex: 1,
             display: 'flex',

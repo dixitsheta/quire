@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import {
   FilePlus, FolderOpen, Save, Eye, EyeOff, Edit3, PanelRightOpen, PanelRightClose,
-  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command
+  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command, Scan
 } from 'lucide-react'
 import { useEditorStore } from '../../stores/editorStore'
 import { useUiStore, type ThemeName } from '../../stores/uiStore'
@@ -29,7 +29,7 @@ export function Header() {
   const addRecentFile = useEditorStore((s) => s.openFile)
 
   const { showEditor, showPreview, toggleEditor, togglePreview, showSidebar, toggleSidebar,
-    showToc, toggleToc, theme, setTheme } = useUiStore()
+    showToc, toggleToc, focusMode, toggleFocusMode, theme, setTheme } = useUiStore()
 
   const themeRef = useRef<HTMLDetailsElement>(null)
 
@@ -151,6 +151,17 @@ export function Header() {
         title="Toggle Table of Contents"
       >
         <BookText size={15} /> TOC
+      </button>
+      <button
+        style={{
+          ...btnStyle,
+          background: focusMode ? 'var(--button-hover)' : 'transparent',
+          color: focusMode ? 'var(--accent)' : 'var(--text-secondary)'
+        }}
+        onClick={toggleFocusMode}
+        title="Toggle Focus Mode"
+      >
+        <Scan size={15} /> Focus
       </button>
 
       <div style={{ flex: 1 }} />
