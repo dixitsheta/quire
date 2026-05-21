@@ -9,7 +9,8 @@ const electronAPI: ElectronAPI = {
     read: (filePath) => ipcRenderer.invoke('file:read', filePath),
     checkExists: (filePath) => ipcRenderer.invoke('file:check-exists', filePath),
     getDirectory: (dirPath) => ipcRenderer.invoke('file:get-directory', dirPath),
-    openPaths: (filePaths) => ipcRenderer.invoke('file:open-paths', filePaths)
+    openPaths: (filePaths) => ipcRenderer.invoke('file:open-paths', filePaths),
+    pasteImage: (currentFilePath) => ipcRenderer.invoke('file:paste-image', currentFilePath)
   },
   dialog: {
     openDirectory: () => ipcRenderer.invoke('dialog:open-directory'),

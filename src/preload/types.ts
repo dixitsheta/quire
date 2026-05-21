@@ -32,7 +32,8 @@ export interface ElectronAPI {
     read: (filePath: string) => Promise<string | null>
     checkExists: (filePath: string) => Promise<boolean>
     getDirectory: (dirPath: string) => Promise<DirEntry[] | null>
-    openPaths: (filePaths: string[]) => Promise<FileResult[]>
+    openPaths: (filePaths: string[]) => Promise<FileResult[]>,
+    pasteImage: (currentFilePath: string | null) => Promise<{ markdown: string; filePath: string } | null>
   }
   dialog: {
     openDirectory: () => Promise<string | null>

@@ -1,5 +1,5 @@
-import { ipcMain, dialog, BrowserWindow } from 'electron'
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs'
+import { ipcMain, dialog, BrowserWindow, clipboard, nativeImage } from 'electron'
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs'
 import { join, dirname, basename } from 'path'
 import type { FileEntry } from '../preload/types'
 
@@ -103,5 +103,26 @@ export function registerIpcHandlers(mainWindow: BrowserWindow): void {
         fileName: basename(filePath),
         content: readFileSync(filePath, 'utf-8')
       }))
+  })
+
+  ipcMain.handle('file:paste-image', async (_event, currentFilePath: string) => {
+    const img = clipboard.readImage()
+    if (img.isEmpty()) return null
+
+    const assetsDir = currentFilePath
+      ? join(dirname(currentFilePath), 'assets')
+      : join(process.cwd(), 'assets')
+
+    if (!existsSync(assetsDir)) {
+      mkdirSync(assetsDir, { recursive: true })
+    }
+
+    const timestamp = Date.now()
+    const fileName = `image-${timestamp}.png`
+    const filePath = join(assetsDir, fileName)
+    writeFileSync(filePath, img.toPNG())
+
+    const relativePath = currentFilePath ? `assets/${fileName}` : filePath
+    return { markdown: `![Pasted image](${relativePath})`, filePath }
   })
 }

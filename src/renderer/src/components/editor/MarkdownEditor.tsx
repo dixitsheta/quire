@@ -1,11 +1,13 @@
 import { useCallback, useRef, useEffect } from 'react'
 import Editor, { type OnMount, type OnChange } from '@monaco-editor/react'
+import type { editor as MonacoEditor } from 'monaco-editor'
 import { useEditorStore } from '../../stores/editorStore'
 import { useSettingsStore } from '../../stores/settingsStore'
 import { useUiStore } from '../../stores/uiStore'
 
 export function MarkdownEditor() {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null)
+  const monacoRef = useRef<Parameters<OnMount>[1] | null>(null)
   const getActiveFile = useEditorStore((s) => s.getActiveFile)
   const updateContent = useEditorStore((s) => s.updateContent)
   const setCursorPosition = useEditorStore((s) => s.setCursorPosition)
@@ -15,8 +17,9 @@ export function MarkdownEditor() {
 
   const activeFile = getActiveFile()
 
-  const handleEditorDidMount: OnMount = useCallback((editor) => {
+  const handleEditorDidMount: OnMount = useCallback((editor, monaco) => {
     editorRef.current = editor
+    monacoRef.current = monaco
 
     editor.onDidChangeCursorPosition((e) => {
       useEditorStore.getState().setCursorPosition(e.position.lineNumber, e.position.column)
@@ -30,6 +33,47 @@ export function MarkdownEditor() {
       const chars = value.length
       useEditorStore.getState().setCounts(words, chars)
     })
+  }, [])
+
+  useEffect(() => {
+    const editor = editorRef.current
+    if (!editor) return
+
+    const container = editor.getContainerDomNode()
+    if (!container) return
+
+    const handler = async (e: ClipboardEvent) => {
+      if (!e.clipboardData || !e.clipboardData.files.length) return
+      const file = e.clipboardData.files[0]
+      if (!file.type.startsWith('image/')) return
+
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (!window.electronAPI) return
+      const activeFile = useEditorStore.getState().getActiveFile()
+      const result = await window.electronAPI.file.pasteImage(activeFile?.filePath ?? null)
+      if (!result) return
+
+      const position = editor.getPosition()
+      const monaco = monacoRef.current
+      if (position && monaco) {
+        editor.executeEdits('paste-image', [
+          {
+            range: new monaco.Range(
+              position.lineNumber,
+              position.column,
+              position.lineNumber,
+              position.column
+            ),
+            text: result.markdown + '\n'
+          }
+        ])
+      }
+    }
+
+    container.addEventListener('paste', handler)
+    return () => container.removeEventListener('paste', handler)
   }, [])
 
   const handleChange: OnChange = useCallback(
