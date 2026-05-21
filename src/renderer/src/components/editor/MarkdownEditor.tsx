@@ -121,7 +121,8 @@ export function MarkdownEditor() {
           cursorSmoothCaretAnimation: 'on',
           renderLineHighlight: 'all',
           fontFamily: "'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', monospace",
-          fontLigatures: true
+          fontLigatures: true,
+          spellcheck: true
         }}
       />
     </div>
