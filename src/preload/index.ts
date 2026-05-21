@@ -16,6 +16,11 @@ const electronAPI: ElectronAPI = {
     openDirectory: () => ipcRenderer.invoke('dialog:open-directory'),
     confirm: (message, title) => ipcRenderer.invoke('dialog:confirm', message, title)
   },
+  update: {
+    check: () => ipcRenderer.invoke('update:check'),
+    download: () => ipcRenderer.invoke('update:download'),
+    install: () => ipcRenderer.invoke('update:install')
+  },
   platform: process.platform,
   on: (channel, callback) => {
     const listener = (_event: Electron.IpcRendererEvent, ...args: unknown[]) => callback(...args)

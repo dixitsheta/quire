@@ -3,6 +3,7 @@ import { join } from 'path'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
 import { buildMenu } from './menu'
 import { registerIpcHandlers } from './ipc'
+import { initAutoUpdater, checkForUpdates, downloadUpdate, quitAndInstall } from './updater'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -47,6 +48,26 @@ function createWindow(): void {
   Menu.setApplicationMenu(menu)
 
   registerIpcHandlers(mainWindow)
+
+  if (app.isPackaged) {
+    initAutoUpdater(mainWindow)
+    checkForUpdates()
+  }
+
+  ipcMain.handle('update:check', () => {
+    checkForUpdates()
+    return true
+  })
+
+  ipcMain.handle('update:download', () => {
+    downloadUpdate()
+    return true
+  })
+
+  ipcMain.handle('update:install', () => {
+    quitAndInstall()
+    return true
+  })
 }
 
 let pendingOpenFile: string | null = null

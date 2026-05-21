@@ -35,6 +35,11 @@ export interface ElectronAPI {
     openPaths: (filePaths: string[]) => Promise<FileResult[]>,
     pasteImage: (currentFilePath: string | null) => Promise<{ markdown: string; filePath: string } | null>
   }
+  update: {
+    check: () => Promise<boolean>
+    download: () => Promise<boolean>
+    install: () => Promise<boolean>
+  }
   dialog: {
     openDirectory: () => Promise<string | null>
     confirm: (message: string, title: string) => Promise<number>

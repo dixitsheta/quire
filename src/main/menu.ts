@@ -184,6 +184,11 @@ export function buildMenu(mainWindow: BrowserWindow): Menu {
           click: () => mainWindow.webContents.send('menu:shortcuts')
         },
         { type: 'separator' },
+        {
+          label: 'Check for Updates...',
+          click: () => mainWindow.webContents.send('menu:check-update')
+        },
+        { type: 'separator' },
         { role: 'about' }
       ]
     }

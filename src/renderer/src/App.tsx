@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useUiStore } from './stores/uiStore'
 import { useEditorStore } from './stores/editorStore'
 import { AppShell } from './components/AppShell'
@@ -17,6 +17,8 @@ export default function App() {
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [showCssInject, setShowCssInject] = useState(false)
   const [showThemeGallery, setShowThemeGallery] = useState(false)
+  const [updateMsg, setUpdateMsg] = useState<string | null>(null)
+  const [updateVersion, setUpdateVersion] = useState<string | null>(null)
 
   useKeyboardShortcuts()
   useAutoSave()
@@ -96,6 +98,10 @@ export default function App() {
       window.electronAPI.on('menu:shortcuts', () => setShowShortcuts(true)),
       window.electronAPI.on('menu:custom-css', () => setShowCssInject(true)),
       window.electronAPI.on('menu:theme-gallery', () => setShowThemeGallery(true)),
+      window.electronAPI.on('menu:check-update', () => {
+        setUpdateMsg('Checking for updates...')
+        window.electronAPI?.update.check()
+      }),
       window.electronAPI.on('menu:find', () => {
         const searchInput = document.querySelector<HTMLInputElement>('[placeholder="Search..."]')
         searchInput?.focus()
@@ -130,6 +136,34 @@ export default function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!window.electronAPI) return
+    const unsub: (() => void)[] = []
+    unsub.push(
+      window.electronAPI.on('update:checking', () => setUpdateMsg('Checking for updates...')),
+      window.electronAPI.on('update:available', (v) => {
+        setUpdateMsg(`Update ${v} available. Downloading...`)
+        setUpdateVersion(v as string)
+        window.electronAPI?.update.download()
+      }),
+      window.electronAPI.on('update:not-available', () => {
+        setUpdateMsg('You have the latest version')
+        setTimeout(() => setUpdateMsg(null), 3000)
+      }),
+      window.electronAPI.on('update:error', (err) => {
+        setUpdateMsg(`Update error: ${err}`)
+        setTimeout(() => setUpdateMsg(null), 5000)
+      }),
+      window.electronAPI.on('update:progress', (pct) => {
+        setUpdateMsg(`Downloading update... ${Math.round(pct as number)}%`)
+      }),
+      window.electronAPI.on('update:downloaded', () => {
+        setUpdateMsg(`Update ${updateVersion} ready. Restart to install.`)
+      })
+    )
+    return () => unsub.forEach((u) => u())
+  }, [updateVersion])
+
   return (
     <>
       <AppShell />
@@ -138,6 +172,21 @@ export default function App() {
       {showShortcuts && <ShortcutsModal onClose={() => setShowShortcuts(false)} />}
       {showCssInject && <CssInjectModal onClose={() => setShowCssInject(false)} />}
       {showThemeGallery && <ThemeGalleryModal onClose={() => setShowThemeGallery(false)} />}
+      {updateMsg && (
+        <div style={{
+          position: 'fixed', bottom: 32, left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--statusbar-bg)', color: 'var(--statusbar-text)',
+          padding: '8px 16px', borderRadius: 8, fontSize: 13, zIndex: 2000,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)', cursor: updateMsg.includes('ready') ? 'pointer' : 'default'
+        }} onClick={() => {
+          if (updateMsg.includes('ready')) {
+            window.electronAPI?.update.install()
+          }
+        }}>
+          {updateMsg}
+          {updateMsg.includes('ready') && <span style={{ marginLeft: 8, fontWeight: 600 }}>Click to restart</span>}
+        </div>
+      )}
     </>
   )
 }
