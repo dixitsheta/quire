@@ -1,14 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quire</title>
+  <title>Quire – Markdown Viewer & Editor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body{font-family:sans-serif;max-width:800px;margin:2rem auto;line-height:1.6;}
+    body { background-color: #f8f9fa; }
+    .hero { background: linear-gradient(135deg, #0d47a1, #1565c0); color: white; padding: 4rem 0; }
+    .card { transition: transform .2s; border: none; }
+    .card:hover { transform: translateY(-5px); }
+    .footer { background: #343a40; color: white; padding: 1.5rem 0; }
   </style>
 </head>
 <body>
-  <h1>Quire</h1>
-  <p>This is the GitHub Pages site for the <a href="https://github.com/dixitsheta/quire">Quire</a> project.</p>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Quire</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://github.com/dixitsheta/quire/wiki">Wiki</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero text-center">
+    <div class="container">
+      <h1 class="display-4">Quire</h1>
+      <p class="lead">A lightweight Markdown viewer &amp; editor built with Electron.</p>
+      <a href="https://github.com/dixitsheta/quire" class="btn btn-light btn-lg">View on GitHub</a>
+    </div>
+  </section>
+
+  <div class="container py-5">
+    <h2 class="mb-4 text-center">Features</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">Live Preview</h5>
+            <p class="card-text flex-grow-1">See your markdown rendered instantly as you type.</p>
+            <a href="#" class="mt-auto btn btn-outline-primary">Learn more</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">Custom Themes</h5>
+            <p class="card-text flex-grow-1">Switch between light, dark, and custom CSS themes.</p>
+            <a href="#" class="mt-auto btn btn-outline-primary">Learn more</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">Export &amp; Print</h5>
+            <p class="card-text flex-grow-1">Export to PDF, HTML, or print directly from the app.</p>
+            <a href="#" class="mt-auto btn btn-outline-primary">Learn more</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer text-center">
+    <div class="container">
+      <span>© 2026 Quire. Licensed under Apache 2.0.</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
