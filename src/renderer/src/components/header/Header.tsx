@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import {
   FilePlus, FolderOpen, Save, Eye, EyeOff, Edit3, PanelRightOpen, PanelRightClose,
-  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command, Scan, Palette
+  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command, Scan, Palette, Images
 } from 'lucide-react'
 import { useEditorStore } from '../../stores/editorStore'
 import { useUiStore, type ThemeName } from '../../stores/uiStore'
@@ -199,6 +199,17 @@ export function Header() {
       </button>
 
       <div style={separator} />
+
+      <button
+        style={btnStyle}
+        onClick={() => {
+          const ev = new CustomEvent('md:open-theme-gallery')
+          window.dispatchEvent(ev)
+        }}
+        title="Theme Gallery"
+      >
+        <Images size={15} /> Themes
+      </button>
 
       <div style={{ position: 'relative' }}>
         <select

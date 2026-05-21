@@ -107,6 +107,10 @@ export function buildMenu(mainWindow: BrowserWindow): Menu {
         },
         { type: 'separator' },
         {
+          label: 'Theme Gallery...',
+          click: () => mainWindow.webContents.send('menu:theme-gallery')
+        },
+        {
           label: 'Custom CSS...',
           click: () => mainWindow.webContents.send('menu:custom-css')
         },
