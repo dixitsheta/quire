@@ -8,7 +8,8 @@ const electronAPI: ElectronAPI = {
     saveAs: (content) => ipcRenderer.invoke('file:save-as', content),
     read: (filePath) => ipcRenderer.invoke('file:read', filePath),
     checkExists: (filePath) => ipcRenderer.invoke('file:check-exists', filePath),
-    getDirectory: (dirPath) => ipcRenderer.invoke('file:get-directory', dirPath)
+    getDirectory: (dirPath) => ipcRenderer.invoke('file:get-directory', dirPath),
+    openPaths: (filePaths) => ipcRenderer.invoke('file:open-paths', filePaths)
   },
   dialog: {
     openDirectory: () => ipcRenderer.invoke('dialog:open-directory'),

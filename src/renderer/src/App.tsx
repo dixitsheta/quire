@@ -23,9 +23,24 @@ export default function App() {
 
   useEffect(() => {
     const editorStore = useEditorStore.getState()
-    if (editorStore.openFiles.length === 0) {
-      editorStore.newFile()
+    const restoreSession = async () => {
+      const saved = localStorage.getItem('md-editor-session')
+      if (saved) {
+        try {
+          const paths: string[] = JSON.parse(saved)
+          if (paths.length > 0 && window.electronAPI) {
+            const results = await window.electronAPI.file.openPaths(paths)
+            results.forEach((f) => editorStore.openFile(f.filePath, f.fileName, f.content))
+          }
+        } catch {
+          // ignore corrupted session data
+        }
+      }
+      if (editorStore.openFiles.length === 0) {
+        editorStore.newFile()
+      }
     }
+    restoreSession()
   }, [])
 
   useEffect(() => {
@@ -72,6 +87,14 @@ export default function App() {
       window.electronAPI.on('menu:find', () => {
         const searchInput = document.querySelector<HTMLInputElement>('[placeholder="Search..."]')
         searchInput?.focus()
+      }),
+      window.electronAPI.on('file:opened', async (filePath) => {
+        if (!window.electronAPI) return
+        const content = await window.electronAPI.file.read(filePath as string)
+        if (content) {
+          const name = (filePath as string).split('/').pop() || (filePath as string).split('\\').pop() || 'untitled'
+          useEditorStore.getState().openFile(filePath as string, name!, content)
+        }
       })
     )
 

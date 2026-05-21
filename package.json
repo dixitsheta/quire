@@ -8,7 +8,44 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
-    "postinstall": "echo 'Build manually with: npm run build'"
+    "postinstall": "echo 'Build manually with: npm run build'",
+    "package:mac": "electron-vite build && electron-builder --mac",
+    "package:win": "electron-vite build && electron-builder --win",
+    "package:linux": "electron-vite build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.mdeditor.app",
+    "productName": "MD Editor",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "!node_modules/**/*",
+      "resources/**/*"
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "artifactName": "${productName}-${version}-mac.${ext}",
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "${productName}-${version}-win.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "artifactName": "${productName}-${version}-linux.${ext}",
+      "category": "Office"
+    }
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -33,6 +70,7 @@
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.4.20",
     "electron": "^33.3.1",
+    "electron-builder": "^25.1.8",
     "electron-vite": "^5.0.0",
     "highlight.js": "^11.11.0",
     "postcss": "^8.4.49",

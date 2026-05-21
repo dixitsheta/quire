@@ -32,6 +32,11 @@ interface EditorState {
 
 let fileCounter = 0
 
+function persistSession(files: OpenFile[]): void {
+  const paths = files.map((f) => f.filePath).filter(Boolean) as string[]
+  localStorage.setItem('md-editor-session', JSON.stringify(paths))
+}
+
 export const useEditorStore = create<EditorState>((set, get) => ({
   openFiles: [],
   activeFileId: null,
@@ -44,12 +49,12 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setActiveFile: (id) => set({ activeFileId: id }),
 
   openFile: (filePath, fileName, content) => {
-    const existing = get().openFiles.find((f) => f.filePath === filePath)
+    const id = filePath
+    const existing = get().openFiles.find((f) => f.id === id)
     if (existing) {
-      set({ activeFileId: existing.id })
+      set({ activeFileId: id })
       return
     }
-    const id = `file_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
     const file: OpenFile = {
       id,
       filePath,
@@ -62,6 +67,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       openFiles: [...s.openFiles, file],
       activeFileId: id
     }))
+    persistSession(get().openFiles)
   },
 
   closeFile: (id) => {
@@ -72,6 +78,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         const idx = s.openFiles.findIndex((f) => f.id === id)
         newActive = files[Math.min(idx, files.length - 1)]?.id ?? null
       }
+      persistSession(files)
       return { openFiles: files, activeFileId: newActive }
     })
   },

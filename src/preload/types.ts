@@ -18,6 +18,12 @@ export interface DirEntry {
   mtimeMs: number
 }
 
+export interface OpenFileEvent {
+  filePath: string
+  fileName: string
+  content: string
+}
+
 export interface ElectronAPI {
   file: {
     open: () => Promise<FileResult[] | null>
@@ -26,6 +32,7 @@ export interface ElectronAPI {
     read: (filePath: string) => Promise<string | null>
     checkExists: (filePath: string) => Promise<boolean>
     getDirectory: (dirPath: string) => Promise<DirEntry[] | null>
+    openPaths: (filePaths: string[]) => Promise<FileResult[]>
   }
   dialog: {
     openDirectory: () => Promise<string | null>

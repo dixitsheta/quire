@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from 'react'
+import { useRef, type ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -6,6 +6,7 @@ import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
 import { useEditorStore } from '../../stores/editorStore'
+import { MermaidRenderer } from './MermaidRenderer'
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github-dark.css'
@@ -39,9 +40,18 @@ export function MarkdownPreview() {
                 </a>
               ),
               input: (props) => <input {...props} />,
-              pre: ({ children, ...props }) => (
-                <pre {...props}>{children}</pre>
-              )
+              pre: ({ children, ...props }) => <pre {...props}>{children}</pre>,
+              code: ({ className, children, ...props }) => {
+                const isMermaid = className === 'language-mermaid'
+                if (isMermaid) {
+                  const chart = String(children).replace(/\n$/, '')
+                  return <MermaidRenderer chart={chart} />
+                }
+                if (className) {
+                  return <code className={className} {...props}>{children}</code>
+                }
+                return <code {...props}>{children}</code>
+              }
             }}
           >
             {content}

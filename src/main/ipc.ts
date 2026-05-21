@@ -1,6 +1,7 @@
 import { ipcMain, dialog, BrowserWindow } from 'electron'
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs'
-import { join, dirname, basename, extname } from 'path'
+import { join, dirname, basename } from 'path'
+import type { FileEntry } from '../preload/types'
 
 export function registerIpcHandlers(mainWindow: BrowserWindow): void {
 
@@ -92,5 +93,15 @@ export function registerIpcHandlers(mainWindow: BrowserWindow): void {
       message
     })
     return result.response
+  })
+
+  ipcMain.handle('file:open-paths', async (_event, filePaths: string[]) => {
+    return filePaths
+      .filter((fp) => fp.endsWith('.md') || fp.endsWith('.mdx') || fp.endsWith('.markdown') || fp.endsWith('.txt'))
+      .map((filePath) => ({
+        filePath,
+        fileName: basename(filePath),
+        content: readFileSync(filePath, 'utf-8')
+      }))
   })
 }

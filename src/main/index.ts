@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, Menu, nativeTheme } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, Menu, nativeTheme, shell } from 'electron'
 import { join } from 'path'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
 import { buildMenu } from './menu'
@@ -28,6 +28,15 @@ function createWindow(): void {
     mainWindow?.show()
   })
 
+  mainWindow.webContents.on('will-navigate', (e) => e.preventDefault())
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https:') || url.startsWith('http:')) {
+      shell.openExternal(url)
+    }
+    return { action: 'deny' }
+  })
+
   if (process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
   } else {
@@ -40,8 +49,24 @@ function createWindow(): void {
   registerIpcHandlers(mainWindow)
 }
 
+let pendingOpenFile: string | null = null
+
+app.on('open-file', (event, filePath) => {
+  event.preventDefault()
+  if (mainWindow) {
+    mainWindow.webContents.send('file:opened', filePath)
+  } else {
+    pendingOpenFile = filePath
+  }
+})
+
 app.whenReady().then(() => {
   createWindow()
+
+  if (pendingOpenFile) {
+    mainWindow?.webContents.send('file:opened', pendingOpenFile)
+    pendingOpenFile = null
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
