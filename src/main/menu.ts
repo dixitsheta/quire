@@ -106,6 +106,11 @@ export function buildMenu(mainWindow: BrowserWindow): Menu {
           click: () => mainWindow.webContents.send('menu:zen-mode')
         },
         { type: 'separator' },
+        {
+          label: 'Custom CSS...',
+          click: () => mainWindow.webContents.send('menu:custom-css')
+        },
+        { type: 'separator' },
         { role: 'togglefullscreen' },
         { role: 'toggleDevTools' }
       ]

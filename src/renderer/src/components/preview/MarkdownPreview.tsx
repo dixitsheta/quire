@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react'
+import { useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -6,6 +6,7 @@ import rehypeKatex from 'rehype-katex'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
 import { useEditorStore } from '../../stores/editorStore'
+import { useSettingsStore } from '../../stores/settingsStore'
 import { MermaidRenderer } from './MermaidRenderer'
 
 import 'katex/dist/katex.min.css'
@@ -13,15 +14,18 @@ import 'highlight.js/styles/github-dark.css'
 
 export function MarkdownPreview() {
   const getActiveFile = useEditorStore((s) => s.getActiveFile)
+  const customCSS = useSettingsStore((s) => s.customCSS)
   const previewRef = useRef<HTMLDivElement>(null)
   const activeFile = getActiveFile()
 
   const content = activeFile?.content ?? ''
 
   return (
-    <div
-      ref={previewRef}
-      style={{
+    <>
+      {customCSS && <style>{customCSS}</style>}
+      <div
+        ref={previewRef}
+        style={{
         flex: 1,
         overflow: 'auto',
         background: 'var(--bg-preview)',
@@ -77,5 +81,6 @@ export function MarkdownPreview() {
         </div>
       )}
     </div>
+    </>
   )
 }

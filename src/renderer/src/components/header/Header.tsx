@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import {
   FilePlus, FolderOpen, Save, Eye, EyeOff, Edit3, PanelRightOpen, PanelRightClose,
-  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command, Scan
+  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command, Scan, Palette
 } from 'lucide-react'
 import { useEditorStore } from '../../stores/editorStore'
 import { useUiStore, type ThemeName } from '../../stores/uiStore'
@@ -162,6 +162,17 @@ export function Header() {
         title="Toggle Focus Mode"
       >
         <Scan size={15} /> Focus
+      </button>
+
+      <button
+        style={btnStyle}
+        onClick={() => {
+          const ev = new CustomEvent('md:open-css-inject')
+          window.dispatchEvent(ev)
+        }}
+        title="Custom CSS"
+      >
+        <Palette size={15} /> CSS
       </button>
 
       <div style={{ flex: 1 }} />

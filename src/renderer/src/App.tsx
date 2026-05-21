@@ -5,6 +5,7 @@ import { AppShell } from './components/AppShell'
 import { ExportModal } from './components/modals/ExportModal'
 import { SettingsModal } from './components/modals/SettingsModal'
 import { ShortcutsModal } from './components/modals/ShortcutsModal'
+import { CssInjectModal } from './components/modals/CssInjectModal'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useAutoSave } from './hooks/useAutoSave'
 
@@ -13,6 +14,7 @@ export default function App() {
   const [showExport, setShowExport] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [showShortcuts, setShowShortcuts] = useState(false)
+  const [showCssInject, setShowCssInject] = useState(false)
 
   useKeyboardShortcuts()
   useAutoSave()
@@ -90,6 +92,7 @@ export default function App() {
       window.electronAPI.on('menu:export-html', () => setShowExport(true)),
       window.electronAPI.on('menu:export-pdf', () => setShowExport(true)),
       window.electronAPI.on('menu:shortcuts', () => setShowShortcuts(true)),
+      window.electronAPI.on('menu:custom-css', () => setShowCssInject(true)),
       window.electronAPI.on('menu:find', () => {
         const searchInput = document.querySelector<HTMLInputElement>('[placeholder="Search..."]')
         searchInput?.focus()
@@ -110,11 +113,14 @@ export default function App() {
   useEffect(() => {
     const onSettings = () => setShowSettings(true)
     const onShortcuts = () => setShowShortcuts(true)
+    const onCssInject = () => setShowCssInject(true)
     window.addEventListener('md:open-settings', onSettings)
     window.addEventListener('md:open-shortcuts', onShortcuts)
+    window.addEventListener('md:open-css-inject', onCssInject)
     return () => {
       window.removeEventListener('md:open-settings', onSettings)
       window.removeEventListener('md:open-shortcuts', onShortcuts)
+      window.removeEventListener('md:open-css-inject', onCssInject)
     }
   }, [])
 
@@ -124,6 +130,7 @@ export default function App() {
       {showExport && <ExportModal onClose={() => setShowExport(false)} />}
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
       {showShortcuts && <ShortcutsModal onClose={() => setShowShortcuts(false)} />}
+      {showCssInject && <CssInjectModal onClose={() => setShowCssInject(false)} />}
     </>
   )
 }

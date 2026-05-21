@@ -18,6 +18,7 @@ interface SettingsState {
   wordWrap: 'on' | 'off' | 'wordWrapColumn'
   minimap: boolean
   lineNumbers: boolean
+  customCSS: string
 
   setCurrentDir: (dir: string | null) => void
   setDirectoryEntries: (entries: FileEntry[]) => void
@@ -27,6 +28,7 @@ interface SettingsState {
   setWordWrap: (wrap: 'on' | 'off' | 'wordWrapColumn') => void
   setMinimap: (show: boolean) => void
   setLineNumbers: (show: boolean) => void
+  setCustomCSS: (css: string) => void
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -38,6 +40,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   wordWrap: 'on',
   minimap: true,
   lineNumbers: true,
+  customCSS: localStorage.getItem('md-editor-custom-css') || '',
 
   setCurrentDir: (dir) => set({ currentDir: dir }),
 
@@ -55,5 +58,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setTabSize: (size) => set({ tabSize: size }),
   setWordWrap: (wrap) => set({ wordWrap: wrap }),
   setMinimap: (show) => set({ minimap: show }),
-  setLineNumbers: (show) => set({ lineNumbers: show })
+  setLineNumbers: (show) => set({ lineNumbers: show }),
+  setCustomCSS: (css) => {
+    localStorage.setItem('md-editor-custom-css', css)
+    set({ customCSS: css })
+  }
 }))
