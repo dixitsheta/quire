@@ -1,7 +1,7 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import {
   FilePlus, FolderOpen, Save, Eye, EyeOff, Edit3, PanelRightOpen, PanelRightClose,
-  BookText, Monitor, Sun, Moon, ChevronDown
+  BookText, Monitor, Sun, Moon, ChevronDown, Settings, Command
 } from 'lucide-react'
 import { useEditorStore } from '../../stores/editorStore'
 import { useUiStore, type ThemeName } from '../../stores/uiStore'
@@ -154,6 +154,29 @@ export function Header() {
       </button>
 
       <div style={{ flex: 1 }} />
+
+      <button
+        style={btnStyle}
+        onClick={() => {
+          const ev = new CustomEvent('md:open-settings')
+          window.dispatchEvent(ev)
+        }}
+        title="Settings"
+      >
+        <Settings size={15} /> Settings
+      </button>
+      <button
+        style={btnStyle}
+        onClick={() => {
+          const ev = new CustomEvent('md:open-shortcuts')
+          window.dispatchEvent(ev)
+        }}
+        title="Keyboard Shortcuts"
+      >
+        <Command size={15} /> Shortcuts
+      </button>
+
+      <div style={separator} />
 
       <div style={{ position: 'relative' }}>
         <select

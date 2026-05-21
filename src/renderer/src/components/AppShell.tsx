@@ -10,44 +10,43 @@ import { MarkdownPreview } from './preview/MarkdownPreview'
 import { StatusBar } from './statusbar/StatusBar'
 import { FileTree } from './sidebar/FileTree'
 import { TableOfContents } from './sidebar/TableOfContents'
-import { SearchPanel } from './sidebar/SearchPanel'
 
 export function AppShell() {
-  const { showEditor, showPreview, zenMode, showSidebar, splitOrientation } = useUiStore()
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    const store = useEditorStore.getState()
-    const ui = useUiStore.getState()
-
-    if ((e.metaKey || e.ctrlKey) && e.shiftKey) {
-      switch (e.key) {
-        case 'E':
-          e.preventDefault()
-          ui.toggleSidebar()
-          break
-        case 'F':
-          e.preventDefault()
-          ui.toggleZenMode()
-          break
-        case 'T':
-          e.preventDefault()
-          ui.toggleToc()
-          break
-        case 'P':
-          e.preventDefault()
-          store.newFile()
-          break
-      }
-    }
-  }
+  const { showEditor, showPreview, zenMode, showSidebar, showToc, splitOrientation } = useUiStore()
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    const handler = (e: KeyboardEvent) => {
+      const ui = useUiStore.getState()
+      const editor = useEditorStore.getState()
+
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey) {
+        switch (e.key.toLowerCase()) {
+          case 'e':
+            e.preventDefault()
+            ui.toggleSidebar()
+            break
+          case 'f':
+            e.preventDefault()
+            ui.toggleZenMode()
+            break
+          case 't':
+            e.preventDefault()
+            ui.toggleToc()
+            break
+          case 'p':
+            e.preventDefault()
+            editor.newFile()
+            break
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  const editorVisible = showEditor
-  const previewVisible = showPreview
+  const editorVisible = zenMode ? true : showEditor
+  const previewVisible = zenMode ? true : showPreview
 
   return (
     <div
@@ -95,8 +94,8 @@ export function AppShell() {
         {showSidebar && (
           <div
             style={{
-              width: '250px',
-              minWidth: '200px',
+              width: 250,
+              minWidth: 200,
               borderRight: '1px solid var(--border)',
               background: 'var(--sidebar-bg)',
               display: 'flex',
@@ -133,16 +132,49 @@ export function AppShell() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'var(--text-muted)',
-                fontSize: '14px'
+                fontSize: 14
               }}
             >
-              Both panels are hidden. Use View menu or toolbar buttons to show them.
+              Both panels are hidden. Use toolbar buttons to show them.
             </div>
           )}
         </div>
+
+        {showToc && <TableOfContents />}
       </div>
 
       {!zenMode && <StatusBar />}
+
+      {zenMode && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 12,
+            right: 16,
+            display: 'flex',
+            gap: 8,
+            zIndex: 100
+          }}
+        >
+          <button
+            onClick={() => useUiStore.getState().toggleZenMode()}
+            style={{
+              padding: '6px 14px',
+              border: '1px solid var(--border)',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-secondary)',
+              borderRadius: 6,
+              cursor: 'pointer',
+              fontSize: 12,
+              opacity: 0.6
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.6')}
+          >
+            Exit Zen Mode
+          </button>
+        </div>
+      )}
     </div>
   )
 }
